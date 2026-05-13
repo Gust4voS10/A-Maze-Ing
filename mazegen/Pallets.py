@@ -22,7 +22,8 @@ class Pallet:
             path (str): Path color.
         """
         self.wall_h = wall + "█\033[0m"
-        self.wall_v = wall + "██\033[0m"
+        self.wall_tw = wall + "██\033[0m"
+        self.wall_t = wall + "███\033[0m"
         self.bg_h = bg + "█\033[0m"
         self.bg_v = bg + "██\033[0m"
         self.fourty_two_h = fourty_two + "█\033[0m"

@@ -73,6 +73,75 @@ def get_mazegen(file_name: str) -> MazeGenerator:
         raise KeyError(f"{err}")
 
 
+def display_maze(generator: MazeGenerator) -> None:
+    """
+    Print the maze to the terminal.
+
+    Raises:
+        MazeError: If there is no maze to display.
+    """
+    if (not generator.grid):
+        raise Exception("There's no maze to display.")
+    ret: str = ""
+    for y in range(generator.configs.height):
+        line_1: str = f"{generator.configs.color.wall_h}"
+        line_2: str = ""
+        for x in range(generator.configs.width):
+            cell: Cell = generator.grid[y][x]
+            if cell.is_pattern:
+                line_1 += f"{generator.configs.color.wall_t}"
+                line_2 += f"{generator.configs.color.wall_h}"
+                line_2 += f"{generator.configs.color.fourty_two_v}"
+            elif cell.is_path and generator.show_path:
+                if cell.walls["north"] == 1:
+                    line_1 += f"{generator.configs.color.wall_t}"
+                else:
+                    if generator.grid[y-1][x].is_path:
+                        line_1 += f"{generator.configs.color.path_v}\
+{generator.configs.color.wall_h}"
+                    else:
+                        line_1 += f"{generator.configs.color.bg_v}\
+{generator.configs.color.wall_h}"
+                if cell.walls["west"] == 1:
+                    line_2 += f"{generator.configs.color.wall_h}"
+                else:
+                    if generator.grid[y][x-1].is_path:
+                        line_2 += f"{generator.configs.color.path_h}"
+                    else:
+                        line_2 += f"{generator.configs.color.bg_h}"
+                if not cell.exit and not cell.entry:
+                    line_2 += f"{generator.configs.color.path_v}"
+                elif cell.entry:
+                    line_2 += f"{generator.configs.color.entry}"
+                else:
+                    line_2 += f"{generator.configs.color.exit}"
+
+            else:
+                if (cell.walls["north"] == 1):
+                    line_1 += f"{generator.configs.color.wall_tw}"
+                else:
+                    line_1 += f"{generator.configs.color.bg_v}"
+                if (cell.walls["west"] == 1):
+                    line_2 += f"{generator.configs.color.wall_h}"
+                else:
+                    line_2 += f"{generator.configs.color.bg_h}"
+                if (cell.exit):
+                    line_2 += f"{generator.configs.color.exit}"
+                elif (cell.entry):
+                    line_2 += f"{generator.configs.color.entry}"
+                else:
+                    line_2 += f"{generator.configs.color.bg_v}"
+                line_1 += f"{generator.configs.color.wall_h}"
+        line_2 += f"{generator.configs.color.wall_h}"
+        ret = ret + line_1 + "\n" + line_2 + "\n"
+    bottom_line: str = ""
+    for x in range(generator.configs.width):
+        bottom_line += f"{generator.configs.color.wall_t}"
+    bottom_line += f"{generator.configs.color.wall_h}"
+    ret += bottom_line
+    print(ret)
+
+
 def display_options(generator: MazeGenerator,
                     color: Generator[Pallets.Pallet, None, None]) -> None:
     """
@@ -101,12 +170,12 @@ def display_options(generator: MazeGenerator,
                         generator.show_path = False
                     else:
                         generator.show_path = True
-                    generator.display_maze()
+                    display_maze(generator)
                     display_options(generator, color)
                 case "3":
                     generator.configs.color = next(color)
                     system("clear")
-                    generator.display_maze()
+                    display_maze(generator)
                     display_options(generator, color)
                 case "4":
                     exit(0)
@@ -122,7 +191,7 @@ def display_options(generator: MazeGenerator,
                     if (not generator.configs.perfect):
                         generator.unperfectify()
                     generator.get_output_file()
-                    generator.display_maze()
+                    display_maze(generator)
                     display_options(generator, color)
 
         raise InputError("Choose a number 1-4!")
@@ -168,7 +237,7 @@ def display_interface(maze_generator: MazeGenerator, color:
     if (not maze_generator.configs.perfect):
         maze_generator.unperfectify()
     maze_generator.get_output_file()
-    maze_generator.display_maze()
+    display_maze(maze_generator)
     display_options(maze_generator, color)
 
 
