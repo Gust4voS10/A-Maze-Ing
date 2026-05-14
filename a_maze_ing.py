@@ -74,7 +74,7 @@ def get_mazegen(file_name: str) -> MazeGenerator:
         raise KeyError(f"{err}")
 
 
-def display_maze(generator: MazeGenerator) -> None:
+def display_maze(generator: MazeGenerator, animation: bool) -> None:
     """
     Print the maze to the terminal.
 
@@ -92,7 +92,14 @@ def display_maze(generator: MazeGenerator) -> None:
             if cell.is_pattern:
                 line_1 += f"{generator.configs.color.wall_t}"
                 line_2 += f"{generator.configs.color.wall_h}"
-                line_2 += f"{generator.configs.color.fourty_two_v}"
+                if animation:
+                    line_2 += (
+                        f"\033[38;2;{random.randint(0, 255)};"
+                        f"{random.randint(0, 255)};"
+                        f"{random.randint(0, 255)}m██\033[0m"
+                        )
+                else:
+                    line_2 += f"{generator.configs.color.fourty_two_v}"
             elif cell.is_path and generator.show_path:
                 if cell.walls["north"] == 1:
                     line_1 += f"{generator.configs.color.wall_t}"
@@ -150,7 +157,8 @@ def clear_screen() -> None:
     system("cls" if name == "nt" else "clear")
 
 
-def animate_path(generator: MazeGenerator, delay: float = 0.20) -> None:
+def animate_path(generator: MazeGenerator, animation: bool = False,
+                 delay: float = 0.07) -> None:
     """
     Animate the solved maze path by unmarking all path cells and
     re-marking them one by one with a delay.
@@ -165,13 +173,21 @@ def animate_path(generator: MazeGenerator, delay: float = 0.20) -> None:
     for cell in path:
         cell.is_path = True
         clear_screen()
-        print("\a", end="")
-        display_maze(generator)
+        #print("\a", end="")
+        display_maze(generator, animation)
         time.sleep(delay)
+    for _ in range(3):
+        print("\a", end="")
+        time.sleep(0.2)
+        clear_screen()
+        display_maze(generator, animation)
+    clear_screen()
+    display_maze(generator, False)
 
 
 def display_options(generator: MazeGenerator,
-                    color: Generator[Pallets.Pallet, None, None]) -> None:
+                    color: Generator[Pallets.Pallet, None, None],
+                    animation: bool) -> None:
     """
     Displays the options menu for the user to interact with the maze.
 
@@ -184,10 +200,14 @@ def display_options(generator: MazeGenerator,
     print("2. Show/Hide path from entry to exit")
     print("3. Rotate colors")
     print("4. Quit")
-    print("5 animated path")
+    print("5. Animated path")
+    print(
+        "6. Change RGB On 42 for Animation Path"
+        f" | Currently set to {animation}"
+        )
     try:
-        answer: str = input("Choice? (1-5): ")
-        if (answer in ["1", "2", "3", "4", "5", "67"]):
+        answer: str = input("Choice? (1-6): ")
+        if (answer in ["1", "2", "3", "4", "5", "6", "67"]):
             match answer:
                 case "1":
                     system(f"rm -rf {generator.configs.output_file}")
@@ -199,18 +219,26 @@ def display_options(generator: MazeGenerator,
                         generator.show_path = False
                     else:
                         generator.show_path = True
-                    display_maze(generator)
-                    display_options(generator, color)
+                    display_maze(generator, False)
+                    display_options(generator, color, animation)
                 case "3":
                     generator.configs.color = next(color)
                     clear_screen()
-                    display_maze(generator)
-                    display_options(generator, color)
+                    display_maze(generator, False)
+                    display_options(generator, color, animation)
                 case "4":
                     exit(0)
                 case "5":
-                    animate_path(generator)
-                    display_options(generator, color)
+                    animate_path(generator, animation)
+                    display_options(generator, color, animation)
+                case "6":
+                    if animation:
+                        animation = False
+                    else:
+                        animation = True
+                    clear_screen()
+                    display_maze(generator, False)
+                    display_options(generator, color, animation)
                 case "67":
                     system("clear")
                     generator.build_grid()
@@ -223,13 +251,13 @@ def display_options(generator: MazeGenerator,
                     if (not generator.configs.perfect):
                         generator.unperfectify()
                     generator.get_output_file()
-                    display_maze(generator)
-                    display_options(generator, color)
+                    display_maze(generator, False)
+                    display_options(generator, color, animation)
 
         raise InputError("Choose a number 1-4!")
     except InputError as e:
         print(e)
-        display_options(generator, color)
+        display_options(generator, color, animation)
 
 
 def choose_color() -> Generator[Pallets.Pallet, None, None]:
@@ -269,8 +297,8 @@ def display_interface(maze_generator: MazeGenerator, color:
     if (not maze_generator.configs.perfect):
         maze_generator.unperfectify()
     maze_generator.get_output_file()
-    display_maze(maze_generator)
-    display_options(maze_generator, color)
+    display_maze(maze_generator, False)
+    display_options(maze_generator, color, False)
 
 
 def main(file_name: str) -> None:
