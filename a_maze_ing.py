@@ -256,10 +256,12 @@ def display_options(generator: MazeGenerator,
 
         raise InputError("Choose a number 1-6!")
     except InputError as e:
-        print(e)
         clear_screen()
         display_maze(generator,False)
+        print(e)
         display_options(generator, color, animation)
+        
+        
 
 
 def choose_color() -> Generator[Pallets.Pallet, None, None]:
