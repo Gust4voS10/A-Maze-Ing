@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by gabrieol, joao-ped.*
+*This project has been created as part of the 42 curriculum by naportel, gustada-.*
 
 # Descrição
 
@@ -13,6 +13,8 @@ Após tudo isso, rodando "make run" no terminal, o labirinto é exibido junto co
 2. Exibe e oculta o caminho para a saída no labirinto
 3. Troca a cor do labirinto
 4. Fecha o programa.
+5. Torna o caminho do labirinto atual animado.
+6. Uma chave em que indica se, durante a animação, o 42 ficará trocando de cores a cada frame
 
 # Recursos
 
@@ -45,4 +47,4 @@ Na classe MazeGenerator, cada funcionalidade do labirinto está separado em um m
 
 # Equipe
 
-Também contando com a ajuda de Gaya (gmarinho), Brits (jbrits-m) Nahirim (naportel) e Gustavo (gustada-), nós dois (gabrieol e joao-ped) fizemos tudo do início ao fim, sem realmente separar funções.
+Também contando com a ajuda de Gaya (gmarinho), Brits (jbrits-m), João Pedro (joao-ped) e Gabriel (gabrieol), nós dois (naportel e gustada-) fizemos tudo do início ao fim, sem realmente separar funções.
