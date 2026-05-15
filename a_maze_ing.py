@@ -254,9 +254,11 @@ def display_options(generator: MazeGenerator,
                     display_maze(generator, False)
                     display_options(generator, color, animation)
 
-        raise InputError("Choose a number 1-4!")
+        raise InputError("Choose a number 1-6!")
     except InputError as e:
         print(e)
+        clear_screen()
+        display_maze(generator,False)
         display_options(generator, color, animation)
 
 
