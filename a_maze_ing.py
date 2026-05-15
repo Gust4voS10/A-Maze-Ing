@@ -201,10 +201,14 @@ def display_options(generator: MazeGenerator,
     print("3. Rotate colors")
     print("4. Quit")
     print("5. Animated path")
-    print(
-        "6. Change RGB On 42 for Animation Path"
-        f" | Currently set to {animation}"
-        )
+    if animation:
+        print(
+            "6. Change RGB On 42 for Animation Path"
+            f" | Currently set to (\033[38;2;1;255;1mTrue\033[0m)"
+            )
+    else:
+        print("6. Change RGB On 42 for Animation Path"
+             " | Currently set to (\033[38;2;255;1;1mFalse\033[0m)")
     try:
         answer: str = input("Choice? (1-6): ")
         if (answer in ["1", "2", "3", "4", "5", "6", "67"]):
