@@ -3,7 +3,7 @@ Main file for running the A-Maze-ing maze generator.
 """
 
 import sys
-from mazegen import Config, MazeGenerator, InputError, Pallets, Cell
+from mazegen import Config, MazeGenerator, InputError, MazeError, Error42, Pallets, Cell
 from os import name, system
 from typing import Generator
 import random
@@ -45,9 +45,12 @@ def get_mazegen(file_name: str) -> MazeGenerator:
         with open(file_name, "r") as file:
             for line in file:
                 if not line.startswith("#"):
-                    key: str = line.split("=")[0]
-                    value: str = line.strip().split("=")[1]
-                    config_dict.update({key: value})
+                    if len(line.split("=")) == 2:
+                        key: str = line.split("=")[0]
+                        value: str = line.strip().split("=")[1]
+                        config_dict.update({key: value})
+                    else:
+                        raise KeyError
 
     except FileNotFoundError:
         raise FileNotFoundError("Error: Invalid file!")
@@ -300,7 +303,10 @@ def display_interface(maze_generator: MazeGenerator, color:
     start: Cell = maze_generator.grid[0][0]
     path: list[Cell] = []
     random.seed(maze_generator.configs.seed)
-    maze_generator.insert_42()
+    try:
+        maze_generator.insert_42()
+    except (MazeError, Error42) as e:
+        print(e)
     maze_generator.make_maze(start, path)
     if (not maze_generator.configs.perfect):
         maze_generator.unperfectify()
