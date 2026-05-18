@@ -3,7 +3,8 @@ Main file for running the A-Maze-ing maze generator.
 """
 
 import sys
-from mazegen import Config, MazeGenerator, InputError, MazeError, Error42, Pallets, Cell
+from mazegen import MazeGenerator, InputError, MazeError
+from mazegen import Error42, Pallets, Cell
 from os import name, system
 from typing import Generator
 import random
@@ -176,7 +177,6 @@ def animate_path(generator: MazeGenerator, animation: bool = False,
     for cell in path:
         cell.is_path = True
         clear_screen()
-        #print("\a", end="")
         display_maze(generator, animation)
         time.sleep(delay)
     for _ in range(3):
@@ -207,11 +207,11 @@ def display_options(generator: MazeGenerator,
     if animation:
         print(
             "6. Change RGB On 42 for Animation Path"
-            f" | Currently set to (\033[38;2;1;255;1mTrue\033[0m)"
+            " | Currently set to (\033[38;2;1;255;1mTrue\033[0m)"
             )
     else:
         print("6. Change RGB On 42 for Animation Path"
-             " | Currently set to (\033[38;2;255;1;1mFalse\033[0m)")
+              " | Currently set to (\033[38;2;255;1;1mFalse\033[0m)")
     try:
         answer: str = input("Choice? (1-6): ")
         if (answer in ["1", "2", "3", "4", "5", "6", "67"]):
@@ -264,11 +264,9 @@ def display_options(generator: MazeGenerator,
         raise InputError("Choose a number 1-6!")
     except InputError as e:
         clear_screen()
-        display_maze(generator,False)
+        display_maze(generator, False)
         print(e)
         display_options(generator, color, animation)
-        
-        
 
 
 def choose_color() -> Generator[Pallets.Pallet, None, None]:
